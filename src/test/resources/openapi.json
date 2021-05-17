@@ -1,0 +1,121 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Here be enum bugs",
+    "description": "OpenAPI spec to test the enum parsing bugs.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/enum/parse/bug": {
+      "post": {
+        "summary": "Test enum parse bug",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TestRequest": {
+        "type": "object",
+        "description": "This request body schema depicts various enum and default value combinations inside schemas of the following properties.",
+        "properties": {
+          "schemaWithEnum": {
+            "$ref": "#/components/schemas/SchemaWithEnum"
+          },
+          "schemaWithDefaultAndEnum": {
+            "$ref": "#/components/schemas/SchemaWithDefaultAndEnum"
+          },
+          "schemaWithEnumWithDefault": {
+            "$ref": "#/components/schemas/SchemaWithEnumWithDefault"
+          },
+          "schemaWithDefaultAndEnumWithDefault": {
+            "$ref": "#/components/schemas/SchemaWithDefaultAndEnumWithDefault"
+          }
+        }
+      },
+      "SchemaWithEnum": {
+        "type": "object",
+        "properties": {
+          "enumProperty": {
+            "description": "This schema with no default values set behaves properly in Swagger Editor and when parsed with OpenAPIV3Parser.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Enum"
+              }
+            ]
+          }
+        }
+      },
+      "SchemaWithDefaultAndEnum": {
+        "type": "object",
+        "properties": {
+          "enumProperty": {
+            "description": "This schema with set default enum value and enum ref shows default \"SCHEMA_DEFAULT\" value in Swagger Editor, but is null when parsed with OpenAPIV3Parser.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Enum"
+              }
+            ],
+            "default": "SCHEMA_DEFAULT"
+          }
+        }
+      },
+      "SchemaWithEnumWithDefault": {
+        "type": "object",
+        "properties": {
+          "enumProperty": {
+            "description": "This schema with ref to enum with set default value shows default \"ENUM_DEFAULT\" value in Swagger Editor, but is null when parsed with OpenAPIV3Parser.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EnumWithDefault"
+              }
+            ]
+          }
+        }
+      },
+      "SchemaWithDefaultAndEnumWithDefault": {
+        "type": "object",
+        "properties": {
+          "enumProperty": {
+            "description": "This schema with set default enum value and ref to enum with set default value shows default \"SCHEMA_DEFAULT\" value in Swagger Editor, but is null when parsed with OpenAPIV3Parser.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EnumWithDefault"
+              }
+            ],
+            "default": "SCHEMA_DEFAULT"
+          }
+        }
+      },
+      "Enum": {
+        "type": "string",
+        "enum": [
+          "SCHEMA_DEFAULT",
+          "NOT_DEFAULT"
+        ]
+      },
+      "EnumWithDefault": {
+        "type": "string",
+        "enum": [
+          "SCHEMA_DEFAULT",
+          "ENUM_DEFAULT",
+          "NOT_DEFAULT"
+        ],
+        "default": "ENUM_DEFAULT"
+      }
+    }
+  }
+}
